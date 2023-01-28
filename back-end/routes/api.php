@@ -1,19 +1,9 @@
 <?php
 
-use Illuminate\Http\Request;
+use App\Http\Controllers\PontoController;
+use App\Http\Controllers\PontoPdfController;
 use Illuminate\Support\Facades\Route;
 
-/*
-|--------------------------------------------------------------------------
-| API Routes
-|--------------------------------------------------------------------------
-|
-| Here is where you can register API routes for your application. These
-| routes are loaded by the RouteServiceProvider within a group which
-| is assigned the "api" middleware group. Enjoy building your API!
-|
-*/
+Route::post('/registry-point', [PontoController::class, 'registryPoint']);
 
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
-});
+Route::get('/get-points', [PontoPdfController::class, 'generatePDF']);
