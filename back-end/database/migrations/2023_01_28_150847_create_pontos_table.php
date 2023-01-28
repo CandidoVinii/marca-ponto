@@ -13,14 +13,13 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('ponto', function (Blueprint $table) {
+        Schema::create('pontos', function (Blueprint $table) {
             $table->id();
             $table->string('name');
             $table->dateTime('ponto_chegada');
             $table->dateTime('ponto_saida');
             $table->string('horas_diurnas');
             $table->string('horas_noturnas');
-
         });
     }
 
@@ -31,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('ponto');
+        Schema::dropIfExists('pontos');
     }
 };
