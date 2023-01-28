@@ -53,7 +53,7 @@ class PontoController extends Controller
         ]);
         // fazer o insert no banco de dados.
 
-        return response()->json(['success' => 'Dados inseridos com sucesso.']);
+        return response()->json(['success' => 'Dados inseridos com sucesso.'], 201);
     }
 
 }
