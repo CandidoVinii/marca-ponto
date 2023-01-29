@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Ponto;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Carbon\Carbon;
 
 class PontoController extends Controller
 {
@@ -61,5 +62,37 @@ class PontoController extends Controller
         // fazer o insert no banco de dados.
 
         return response()->json($dataObj, 201);
+    }
+    public function filterByDate(Request $request)
+    {
+        $dateStartUser = $request->query('start_date');
+        $dateEndUser = $request->query('end_date');
+        if(!$dateStartUser || !$dateEndUser) {
+            return response()->json(['error' => 'Data inválida'], 422);
+        }
+        $startDate = Carbon::createFromFormat('Y-m-d', $dateStartUser)->startOfDay();
+        $endDate = Carbon::createFromFormat('Y-m-d', $dateEndUser)->endOfDay();
+        $points = Ponto::whereBetween('ponto_chegada', [$startDate, $endDate])
+            ->orWhereBetween('ponto_saida', [$startDate, $endDate])
+            ->get()
+            ->groupBy('name');
+
+        foreach ($points as $name => $nameUser) {
+            $totalDayHours = 0;
+            $totalNightHours = 0;
+
+            foreach ($nameUser as $ponto) {
+                $totalDayHours += intval($ponto->horas_diurnas);
+                $totalNightHours += intval($ponto->horas_noturnas);
+            }
+
+            $result[] = [
+                'usuario' => $name,
+                'total_horas_diurnas' => $totalDayHours,
+                'total_horas_noturnas' => $totalNightHours,
+            ];
+        }
+
+        return response()->json($result);
     }
 }
