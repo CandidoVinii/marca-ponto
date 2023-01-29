@@ -18,6 +18,12 @@ class PontoController extends Controller
     {
         $payload = $request->all();
 
+        //Verifica se o payload está vazio
+        if (empty($payload)) {
+            return response()->json(['error' => 'Campos inválidos'], 422);
+        }
+        ;
+
         // Verifica se a diferença entre o ponto de chegada e o ponto de saída é maior que 24 horas
         $arrival = strtotime($payload['chegada']);
         $departure = strtotime($payload['saida']);
@@ -43,17 +49,17 @@ class PontoController extends Controller
         }
         $dayMinutes = $this->minutesToTime($dayMinutes);
         $nightMinutes = $this->minutesToTime($nightMinutes);
-        // Salva os dados no banco de dados
-        Ponto::create([
+        $dataObj = ([
             'name' => $payload['name'],
             'ponto_chegada' => $payload['chegada'],
             'ponto_saida' => $payload['saida'],
             'horas_diurnas' => $dayMinutes,
             'horas_noturnas' => $nightMinutes,
         ]);
+        // Salva os dados no banco de dados
+        Ponto::create($dataObj);
         // fazer o insert no banco de dados.
 
-        return response()->json(['success' => 'Dados inseridos com sucesso.'], 201);
+        return response()->json($dataObj, 201);
     }
-
 }
