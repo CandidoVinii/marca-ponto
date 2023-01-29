@@ -46,3 +46,56 @@ export default {
   },
 };
 </script>
+
+<style>
+body {
+  background-color: lightblue;
+}
+label {
+  font-size: 20px;
+  margin-right: 10px;
+  margin-left: 10px;
+  font-weight: bold;
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  flex-direction: column;
+}
+
+input {
+  height: 20px;
+  width: 250px;
+  font-size: 20px;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  border: none;
+}
+
+button {
+  height: 40px;
+  width: 200px;
+  font-size: 20px;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+  background-color: beige;
+  color: black;
+  border: 0.2px solid black;
+  cursor: pointer;
+  margin-left: 25px;
+}
+
+button[disabled] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+button:active {
+  transform: translateY(2px);
+}
+</style>
