@@ -14,6 +14,28 @@
       <button :disabled="buttonDisabled" @click="submitForm">Enviar</button>
       <button @click="getPDF">Exportar PDF</button>
     </div>
+
+    <div>
+      <input type="date" v-model="startDate" />
+      <input type="date" v-model="endDate" />
+      <button @click="getData">Filtrar</button>
+      <table v-if="pontos.length">
+        <thead>
+          <tr>
+            <th>Nome</th>
+            <th>Total de horas diurnas</th>
+            <th>Total de horas noturnas</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr v-for="ponto in pontos" v-bind:key="ponto.usuario">
+            <td>{{ ponto.usuario }}</td>
+            <td>{{ ponto.total_horas_diurnas }}H</td>
+            <td>{{ ponto.total_horas_noturnas }}H</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
   </div>
 </template>
 
@@ -27,6 +49,9 @@ export default {
         chegada: '',
         saida: '',
       },
+      startDate: '',
+      endDate: '',
+      pontos: [],
     };
   },
   computed: {
@@ -42,7 +67,12 @@ export default {
     },
     getPDF() {
       Ponto.resgatar();
-    }
+    },
+    getData() {
+      Ponto.filtrarPorData(this.startDate, this.endDate).then((result) => {
+        this.pontos = result.data;
+      });
+    },
   },
 };
 </script>
@@ -97,5 +127,19 @@ button[disabled] {
 
 button:active {
   transform: translateY(2px);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+thead {
+  background-color: #ddd;
+}
+th,
+td {
+  padding: 8px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
 }
 </style>
