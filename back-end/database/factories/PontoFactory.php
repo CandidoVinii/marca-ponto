@@ -17,11 +17,11 @@ class PontoFactory extends Factory
     public function definition()
     {
         return [
-            'name' => fake()->name(),
-            'ponto_chegada' => now(),
-            'ponto_saida' => date("2023-01-28 06:00"),
-            'horas_diurnas' => '5:56',
-            'horas_noturnas' => '7:00',
+                'name' => fake()->name(),
+                'ponto_chegada' => date("2023-01-29 23:00"),
+                'ponto_saida' => date("2023-01-30 06:00"),
+                'horas_diurnas' => '1:00',
+                'horas_noturnas' => '7:00',
         ];
     }
 }
