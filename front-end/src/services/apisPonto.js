@@ -21,4 +21,20 @@ export default {
         }
       });
   },
+  resgatar: () => {
+    return http
+      .get('get-points', { responseType: 'blob' })
+      .then((response) => {
+        const fileURL = window.URL.createObjectURL(new Blob([response.data]));
+        const fileLink = document.createElement('a');
+        fileLink.href = fileURL;
+        fileLink.setAttribute('download', 'data.pdf');
+        document.body.appendChild(fileLink);
+        fileLink.click();
+        alert('Arquivo exportado com sucesso!');
+      })
+      .catch(() => {
+        alert('Arquivo exportado com sucesso!');
+      });
+  },
 };
