@@ -69,6 +69,9 @@ export default {
       Ponto.resgatar();
     },
     getData() {
+      if (this.pontos.length > 0) {
+        this.pontos = [];
+      }
       Ponto.filtrarPorData(this.startDate, this.endDate).then((result) => {
         this.pontos = result.data;
       });

@@ -42,8 +42,11 @@ export default {
       .get('points/filter', {
         params: {
           start_date: startDate,
-          end_date: endDate
-        }
+          end_date: endDate,
+        },
       })
+      .catch(() => {
+        alert('Nenhum ponto registrado na data especificada');
+      });
   },
 };
