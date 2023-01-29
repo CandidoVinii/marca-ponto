@@ -3,7 +3,7 @@ import { http } from './config';
 export default {
   marcar: (ponto) => {
     return http
-      .post('registry-point', ponto)
+      .post('points/registry', ponto)
       .then(() => {
         if (!ponto) {
           alert('Insira todos os dados antes de marcar seu ponto!');
@@ -23,7 +23,7 @@ export default {
   },
   resgatar: () => {
     return http
-      .get('get-points', { responseType: 'blob' })
+      .get('points/dowload', { responseType: 'blob' })
       .then((response) => {
         const fileURL = window.URL.createObjectURL(new Blob([response.data]));
         const fileLink = document.createElement('a');
@@ -36,5 +36,14 @@ export default {
       .catch(() => {
         alert('Arquivo exportado com sucesso!');
       });
+  },
+  filtrarPorData: (startDate, endDate) => {
+    return http
+      .get('points/filter', {
+        params: {
+          start_date: startDate,
+          end_date: endDate
+        }
+      })
   },
 };
