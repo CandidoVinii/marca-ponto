@@ -12,13 +12,13 @@
     </form>
     <div class="button-group">
       <button :disabled="buttonDisabled" @click="submitForm">Enviar</button>
-      <button @click="">Exportar PDF</button>
+      <button @click="getPDF">Exportar PDF</button>
     </div>
   </div>
 </template>
 
 <script>
-import Ponto from '@/services/ponto.js';
+import Ponto from '@/services/apisPonto.js';
 export default {
   data() {
     return {
@@ -40,6 +40,9 @@ export default {
       Ponto.marcar(this.form);
       this.form = {};
     },
+    getPDF() {
+      Ponto.resgatar();
+    }
   },
 };
 </script>
