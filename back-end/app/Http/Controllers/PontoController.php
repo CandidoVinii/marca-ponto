@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Ponto;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
+use Carbon\Carbon;
 
 class PontoController extends Controller
 {
@@ -17,6 +18,12 @@ class PontoController extends Controller
     public function registryPoint(Request $request)
     {
         $payload = $request->all();
+
+        //Verifica se o payload está vazio
+        if (empty($payload)) {
+            return response()->json(['error' => 'Campos inválidos'], 422);
+        }
+        ;
 
         // Verifica se a diferença entre o ponto de chegada e o ponto de saída é maior que 24 horas
         $arrival = strtotime($payload['chegada']);
@@ -43,17 +50,49 @@ class PontoController extends Controller
         }
         $dayMinutes = $this->minutesToTime($dayMinutes);
         $nightMinutes = $this->minutesToTime($nightMinutes);
-        // Salva os dados no banco de dados
-        Ponto::create([
+        $dataObj = ([
             'name' => $payload['name'],
             'ponto_chegada' => $payload['chegada'],
             'ponto_saida' => $payload['saida'],
             'horas_diurnas' => $dayMinutes,
             'horas_noturnas' => $nightMinutes,
         ]);
+        // Salva os dados no banco de dados
+        Ponto::create($dataObj);
         // fazer o insert no banco de dados.
 
-        return response()->json(['success' => 'Dados inseridos com sucesso.'], 201);
+        return response()->json($dataObj, 201);
     }
+    public function filterByDate(Request $request)
+    {
+        $dateStartUser = $request->query('start_date');
+        $dateEndUser = $request->query('end_date');
+        if(!$dateStartUser || !$dateEndUser) {
+            return response()->json(['error' => 'Data inválida'], 422);
+        }
+        $startDate = Carbon::createFromFormat('Y-m-d', $dateStartUser)->startOfDay();
+        $endDate = Carbon::createFromFormat('Y-m-d', $dateEndUser)->endOfDay();
+        $points = Ponto::whereBetween('ponto_chegada', [$startDate, $endDate])
+            ->orWhereBetween('ponto_saida', [$startDate, $endDate])
+            ->get()
+            ->groupBy('name');
 
+        foreach ($points as $name => $nameUser) {
+            $totalDayHours = 0;
+            $totalNightHours = 0;
+
+            foreach ($nameUser as $ponto) {
+                $totalDayHours += intval($ponto->horas_diurnas);
+                $totalNightHours += intval($ponto->horas_noturnas);
+            }
+
+            $result[] = [
+                'usuario' => $name,
+                'total_horas_diurnas' => $totalDayHours,
+                'total_horas_noturnas' => $totalNightHours,
+            ];
+        }
+
+        return response()->json($result);
+    }
 }
